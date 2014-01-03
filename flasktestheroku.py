@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify
 import datetime
 try:
   from flask_cors import cross_origin # support local usage without installed package
@@ -17,7 +17,7 @@ def hello_world():
 @app.route('/time')
 @cross_origin()
 def printtime():
-    return str(datetime.datetime.now())
+    return jsonify({'time':str(datetime.datetime.now())})
 
 #@app.route('')
 
