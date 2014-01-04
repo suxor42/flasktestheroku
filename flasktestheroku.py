@@ -14,7 +14,7 @@ app = Flask(__name__)
 def hello_world():
     return 'Hello World!'
 
-@app.route('/time')
+@app.route('/time', methods=['GET'])
 @cross_origin()
 def printtime():
     return jsonify({'time':str(datetime.datetime.now())})
