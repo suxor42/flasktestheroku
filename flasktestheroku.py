@@ -51,7 +51,7 @@ def getdata(parameter):
 def storetrackingdata():
     try:
         tid = request.args.get('tid')
-        referrer = request.referrer
+        referrer = request.remote_addr
         trackingtime = datetime.datetime.strptime(request.args.get('ttime'), '%Y%m%dT%H%M%S%fZ')
         redis.set(tid, str(datetime.datetime.now()))
         redis.set('lastrequest', json.dumps({'time': datetime.datetime.now(),
