@@ -5,7 +5,7 @@ from flask.ext.cors import cross_origin
 from flask.ext.redis import Redis
 
 app = Flask(__name__)
-app.config['REDIS_URL'] = 'redis://redistogo:57de250887d0ed3fcc9e5f8262a5d312@albacore.redistogo.com:10078/'
+app.config['REDIS_URL'] = os.environ['REDIS_URL']
 redis = Redis(app)
 
 
