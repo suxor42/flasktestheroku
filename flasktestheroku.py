@@ -47,6 +47,11 @@ def getdata(parameter):
     return json.dumps({parameter: redis.get(parameter)})
 
 
+@app.route('/redis/flush', methods=['GET'])
+def flush():
+    redis.flushdb()
+    return 'done'
+
 @app.route('/sharedtracking', methods=['GET'])
 def storetrackingdata():
     try:
