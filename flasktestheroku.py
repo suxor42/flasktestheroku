@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify, request, json
+from flask import Flask, request, json
 import datetime
 from flask.ext.cors import cross_origin
 from flask.ext.redis import Redis
@@ -14,12 +14,11 @@ redis = Redis(app)
 def hello_world():
     return 'Hello World!'
 
+
 @app.route('/time', methods=['GET'])
 @cross_origin()
 def printtime():
     return json.dumps({'time': datetime.datetime.now()})
-
-#@app.route('')
 
 
 @app.route('/redis/info', methods=['GET'])
@@ -37,9 +36,11 @@ def listkeys():
         result = str(e)
     return result
 
+
 @app.route('/redis/last', methods=['GET'])
 def lastsharedtrackingrequest():
     return redis.get('lastrequest')
+
 
 @app.route('/redis/<parameter>', methods=['GET'])
 def getdata(parameter):
@@ -48,21 +49,25 @@ def getdata(parameter):
 
 @app.route('/sharedtracking', methods=['GET'])
 def storetrackingdata():
-    tid = request.args.get('tid')
-    trackingtime = datetime.datetime.strptime(request.args.get('ttime'),'%Y%m%dT%H%M%S%fZ')
-    redis.set(tid, str(datetime.datetime.now()))
-    redis.set('lastrequest', json.dumps({'time':datetime.datetime.now(), 'tracking-time': trackingtime, 'tracking-id': tid}))
-    return
-    pass
+    try:
+        tid = request.args.get('tid')
+        referrer = request.referrer
+        trackingtime = datetime.datetime.strptime(request.args.get('ttime'), '%Y%m%dT%H%M%S%fZ')
+        redis.set(tid, str(datetime.datetime.now()))
+        redis.set('lastrequest', json.dumps({'time': datetime.datetime.now(),
+                                             'tracking-time': trackingtime,
+                                             'tracking-id': tid,
+                                             'referrer': referrer}
+                                            ))
+        return ''
+    except Exception, e:
+        return e
+
 
 
 @app.route('/<parameter>')
 def parameter_return(parameter):
     return parameter
-
-
-
-#@app.route('/')
 
 if __name__ == '__main__':
     app.run()
