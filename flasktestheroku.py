@@ -52,12 +52,14 @@ def storetrackingdata():
     try:
         tid = request.args.get('tid')
         referrer = request.remote_addr
+        route = request.access_route
         trackingtime = datetime.datetime.strptime(request.args.get('ttime'), '%Y%m%dT%H%M%S%fZ')
         redis.set(tid, str(datetime.datetime.now()))
         redis.set('lastrequest', json.dumps({'time': datetime.datetime.now(),
                                              'tracking-time': trackingtime,
                                              'tracking-id': tid,
-                                             'referrer': referrer}
+                                             'remote_addr': referrer,
+                                             'route': route}
                                             ))
         return ''
     except Exception, e:
