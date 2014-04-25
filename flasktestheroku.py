@@ -9,7 +9,6 @@ app.config['REDIS_URL'] = os.environ['REDIS_URL']
 redis = Redis(app)
 
 
-
 @app.route('/')
 def hello_world():
     return 'Hello World!'
@@ -52,6 +51,7 @@ def flush():
     redis.flushdb()
     return 'done'
 
+
 @app.route('/sharedtracking', methods=['GET'])
 def storetrackingdata():
     try:
@@ -59,17 +59,19 @@ def storetrackingdata():
         referrer = request.remote_addr
         route = request.access_route
         trackingtime = datetime.datetime.strptime(request.args.get('ttime'), '%Y%m%dT%H%M%S%fZ')
+        trackingtype = str(request.args.get('ttype'))
         #redis.set(tid, str(datetime.datetime.now()))
         redis.set('lastrequest', json.dumps({'time': datetime.datetime.now(),
                                              'tracking-time': trackingtime,
                                              'tracking-id': tid,
                                              'remote_addr': referrer,
-                                             'route': route}
+                                             'tracking_type': trackingtype,
+                                             'route': route,
+                                             }
                                             ))
         return ''
     except Exception, e:
         return e
-
 
 
 @app.route('/<parameter>')
