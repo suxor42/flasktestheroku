@@ -47,11 +47,21 @@ def lastsharedtrackingrequests():
     except Exception, e:
         return str(e)
 
+
 @app.route('/lastsales', methods=['GET'])
 def lastsales():
+    return lasttransactions('sale')
+
+
+@app.route('/lastleads', methods=['GET'])
+def lastleads():
+    return lasttransactions('lead')
+
+
+def lasttransactions(transactiontype):
     try:
         transactions = map(json.loads, redis.lrange('requests', 0, -1))
-        sales = filter(lambda x: x['tracking-type'] == 'sale', transactions)
+        sales = filter(lambda x: x['tracking-type'] == transactiontype, transactions)
         #return str(sales)
         timeformat = '%a, %d %b %Y %H:%M:%S %Z'
         geckoitems = map(lambda x: (datetime.datetime.strptime(x['time'], timeformat) - datetime.datetime.strptime(x['tracking-time'], timeformat)).seconds, sales)
@@ -68,8 +78,6 @@ def lastsales():
         return json.dumps(geckodata)
     except Exception, e:
         return str(e)
-
-
 
 @app.route('/redis/<parameter>', methods=['GET'])
 def getdata(parameter):
