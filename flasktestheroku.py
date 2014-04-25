@@ -43,7 +43,7 @@ def lastsharedtrackingrequest():
 @app.route('/redis/lastrequests', methods=['GET'])
 def lastsharedtrackingrequests():
     try:
-        return str(redis.lrange('requests', 0, -1))
+        return str(map(json.loads, redis.lrange('requests', 0, -1)))
     except Exception, e:
         return str(e)
 
