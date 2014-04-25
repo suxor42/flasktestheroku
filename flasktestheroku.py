@@ -60,8 +60,13 @@ def lastleads():
 
 @app.route('/timesincelastrequest', methods=['GET'])
 def timesincelastrequest():
-    value = "Seconds since last shared tracking call: %s" % int((datetime.datetime.now() - datetime.datetime.strptime(json.loads(redis.get('lastrequest'))['time'], timeformat)).total_seconds())
-    return json.dumps({'item': [{'text': value}, ]})
+    seconds = int((datetime.datetime.now() - datetime.datetime.strptime(json.loads(redis.get('lastrequest'))['time'], timeformat)).total_seconds())
+    value = "Seconds since last shared tracking call: %s" % seconds
+    if seconds > 300:
+        type = 1
+    else:
+        type = 0
+    return json.dumps({'item': [{'text': value, 'type': type}, ]})
 
 
 def lasttransactions(transactiontype):
