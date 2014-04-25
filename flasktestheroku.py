@@ -111,7 +111,7 @@ def storetrackingdata():
                       'tracking-type': trackingtype,
                       'route': route,
         }
-        redis.lpush('requests', json.dumps(dataobject))
+        redis.rpush('requests', json.dumps(dataobject))
         redis.ltrim('requests', 0, 99)
         redis.set('lastrequest', json.dumps(dataobject))
         return ''
