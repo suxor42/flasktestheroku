@@ -47,6 +47,25 @@ def lastsharedtrackingrequests():
     except Exception, e:
         return str(e)
 
+@app.route('/lastsales', methods=['GET'])
+def lastsales():
+    transactions = map(json.loads, redis.lrange('requests', 0, -1))
+    sales = filter(lambda x: x['tracking-type'] == 'sale', transactions)
+
+    geckoitems = map(lambda x: x['time'] - x['tracking-time'], sales)
+    axisxmin = min(sales, key=lambda x: x['time'])
+    axisxmax = max(sales, key=lambda x: x['time'])
+    axisymin = min(geckoitems)
+    axisymax = max(geckoitems)
+    geckodata = {'items': geckoitems,
+                 'settings': {
+                     'axisx': [axisxmin,axisxmax],
+                     'axisy': [axisymin,axisymax],
+                 },
+                 }
+    return json.dumps(geckodata)
+
+
 
 @app.route('/redis/<parameter>', methods=['GET'])
 def getdata(parameter):
@@ -72,7 +91,7 @@ def storetrackingdata():
                       'tracking-time': trackingtime,
                       'tracking-id': tid,
                       'remote_addr': referrer,
-                      'tracking_type': trackingtype,
+                      'tracking-type': trackingtype,
                       'route': route,
         }
         redis.lpush('requests', json.dumps(dataobject))
