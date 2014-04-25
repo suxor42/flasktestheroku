@@ -40,6 +40,10 @@ def listkeys():
 def lastsharedtrackingrequest():
     return redis.get('lastrequest')
 
+@app.route('/redis/lastrequests', methods=['GET'])
+def lastsharedtrackingrequests():
+    return redis.get('requests')
+
 
 @app.route('/redis/<parameter>', methods=['GET'])
 def getdata(parameter):
