@@ -49,21 +49,24 @@ def lastsharedtrackingrequests():
 
 @app.route('/lastsales', methods=['GET'])
 def lastsales():
-    transactions = map(json.loads, redis.lrange('requests', 0, -1))
-    sales = filter(lambda x: x['tracking-type'] == 'sale', transactions)
+    try:
+        transactions = map(json.loads, redis.lrange('requests', 0, -1))
+        sales = filter(lambda x: x['tracking-type'] == 'sale', transactions)
 
-    geckoitems = map(lambda x: x['time'] - x['tracking-time'], sales)
-    axisxmin = min(sales, key=lambda x: x['time'])
-    axisxmax = max(sales, key=lambda x: x['time'])
-    axisymin = min(geckoitems)
-    axisymax = max(geckoitems)
-    geckodata = {'items': geckoitems,
-                 'settings': {
-                     'axisx': [axisxmin,axisxmax],
-                     'axisy': [axisymin,axisymax],
-                 },
-                 }
-    return json.dumps(geckodata)
+        geckoitems = map(lambda x: x['time'] - x['tracking-time'], sales)
+        axisxmin = min(sales, key=lambda x: x['time'])
+        axisxmax = max(sales, key=lambda x: x['time'])
+        axisymin = min(geckoitems)
+        axisymax = max(geckoitems)
+        geckodata = {'items': geckoitems,
+                     'settings': {
+                         'axisx': [axisxmin,axisxmax],
+                         'axisy': [axisymin,axisymax],
+                     },
+                     }
+        return json.dumps(geckodata)
+    except Exception, e:
+        return str(e)
 
 
 
