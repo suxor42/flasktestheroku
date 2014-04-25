@@ -46,7 +46,7 @@ def lastsharedtrackingrequests():
         blub = redis.lrange('requests', 0, -1)
     except Exception, e:
         return str(e)
-    return blub
+    return str(blub)
 
 
 @app.route('/redis/<parameter>', methods=['GET'])
