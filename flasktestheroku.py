@@ -43,10 +43,9 @@ def lastsharedtrackingrequest():
 @app.route('/redis/lastrequests', methods=['GET'])
 def lastsharedtrackingrequests():
     try:
-        blub = json.loads(str(redis.lrange('requests', 0, -1)))
+        return str(redis.lrange('requests', 0, -1))
     except Exception, e:
         return str(e)
-    return json.dumps(blub)
 
 
 @app.route('/redis/<parameter>', methods=['GET'])
