@@ -61,14 +61,16 @@ def storetrackingdata():
         trackingtime = datetime.datetime.strptime(request.args.get('ttime'), '%Y%m%dT%H%M%S%fZ')
         trackingtype = str(request.args.get('ttype'))
         #redis.set(tid, str(datetime.datetime.now()))
-        redis.set('lastrequest', json.dumps({'time': datetime.datetime.now(),
-                                             'tracking-time': trackingtime,
-                                             'tracking-id': tid,
-                                             'remote_addr': referrer,
-                                             'tracking_type': trackingtype,
-                                             'route': route,
-                                             }
-                                            ))
+        dataobject = {'time': datetime.datetime.now(),
+                      'tracking-time': trackingtime,
+                      'tracking-id': tid,
+                      'remote_addr': referrer,
+                      'tracking_type': trackingtype,
+                      'route': route,
+        }
+        redis.lpush('requests', json.dumps(dataobject))
+        redis.ltrim('requests', 0, 99)
+        redis.set('lastrequest', json.dumps(dataobject))
         return ''
     except Exception, e:
         return e
@@ -77,6 +79,7 @@ def storetrackingdata():
 @app.route('/<parameter>')
 def parameter_return(parameter):
     return parameter
+
 
 if __name__ == '__main__':
     app.run()
