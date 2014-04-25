@@ -70,7 +70,7 @@ def lasttransactions(transactiontype):
         sales = filter(lambda x: x['tracking-type'] == transactiontype, transactions)
         #return str(sales)
 
-        geckoitems = map(lambda x: (datetime.datetime.strptime(x['time'], timeformat) - datetime.datetime.strptime(x['tracking-time'], timeformat)).seconds, sales)
+        geckoitems = map(lambda x: str((datetime.datetime.strptime(x['time'], timeformat) - datetime.datetime.strptime(x['tracking-time'], timeformat)).seconds), sales)
         axisxmin = min(sales, key=lambda x: x['time'])['time']
         axisxmax = max(sales, key=lambda x: x['time'])['time']
         axisymin = min(geckoitems)
