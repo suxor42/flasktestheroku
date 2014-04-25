@@ -52,7 +52,7 @@ def lastsales():
     try:
         transactions = map(json.loads, redis.lrange('requests', 0, -1))
         sales = filter(lambda x: x['tracking-type'] == 'sale', transactions)
-
+        return str(sales)
         geckoitems = map(lambda x: datetime.datetime(x['time']) - datetime.datetime(x['tracking-time']), sales)
         axisxmin = min(sales, key=lambda x: x['time'])
         axisxmax = max(sales, key=lambda x: x['time'])
