@@ -55,8 +55,8 @@ def lastsales():
         #return str(sales)
         timeformat = '%a, %d %b %Y %H:%M:%S %Z'
         geckoitems = map(lambda x: (datetime.datetime.strptime(x['time'], timeformat) - datetime.datetime.strptime(x['tracking-time'], timeformat)).seconds, sales)
-        axisxmin = min(sales, key=lambda x: x['time'])
-        axisxmax = max(sales, key=lambda x: x['time'])
+        axisxmin = min(sales, key=lambda x: x['time'])['time']
+        axisxmax = max(sales, key=lambda x: x['time'])['time']
         axisymin = min(geckoitems)
         axisymax = max(geckoitems)
         geckodata = {'items': geckoitems,
