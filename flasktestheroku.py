@@ -63,10 +63,10 @@ def timesincelastrequest():
     seconds = int((datetime.datetime.now() - datetime.datetime.strptime(json.loads(redis.get('lastrequest'))['time'], timeformat)).total_seconds())
     value = "Seconds since last shared tracking call: %s" % seconds
     if seconds > 300:
-        type = 1
+        messagetype = 1
     else:
-        type = 0
-    return json.dumps({'item': [{'text': value, 'type': type}, ]})
+        messagetype = 0
+    return json.dumps({'item': [{'text': value, 'type': messagetype}, ]})
 
 
 def lasttransactions(transactiontype):
