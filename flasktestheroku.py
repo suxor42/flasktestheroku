@@ -7,7 +7,7 @@ from flask.ext.redis import Redis
 app = Flask(__name__)
 app.config['REDIS_URL'] = os.environ['REDIS_URL']
 redis = Redis(app)
-
+timeformat = '%a, %d %b %Y %H:%M:%S %Z'
 
 @app.route('/')
 def hello_world():
@@ -58,12 +58,17 @@ def lastleads():
     return lasttransactions('lead')
 
 
+@app.route('/timesincelastrequest')
+def timesincelastrequest():
+    return "Seconds since last shared tracking call: %s" % (datetime.datetime.now() - datetime.datetime.strptime(redis.get('lastrequest')['time'], timeformat)).total_seconds()
+
+
 def lasttransactions(transactiontype):
     try:
         transactions = map(json.loads, redis.lrange('requests', 0, -1))
         sales = filter(lambda x: x['tracking-type'] == transactiontype, transactions)
         #return str(sales)
-        timeformat = '%a, %d %b %Y %H:%M:%S %Z'
+
         geckoitems = map(lambda x: (datetime.datetime.strptime(x['time'], timeformat) - datetime.datetime.strptime(x['tracking-time'], timeformat)).seconds, sales)
         axisxmin = min(sales, key=lambda x: x['time'])['time']
         axisxmax = max(sales, key=lambda x: x['time'])['time']
