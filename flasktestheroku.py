@@ -54,15 +54,15 @@ def lastsales():
         sales = filter(lambda x: x['tracking-type'] == 'sale', transactions)
         #return str(sales)
         timeformat = '%a, %d %b %Y %H:%M:%S %Z'
-        geckoitems = map(lambda x: str((datetime.datetime.strptime(x['time'], timeformat) - datetime.datetime.strptime(x['tracking-time'], timeformat)).seconds), sales)
+        geckoitems = map(lambda x: (datetime.datetime.strptime(x['time'], timeformat) - datetime.datetime.strptime(x['tracking-time'], timeformat)).seconds, sales)
         axisxmin = min(sales, key=lambda x: x['time'])['time']
         axisxmax = max(sales, key=lambda x: x['time'])['time']
         axisymin = min(geckoitems)
         axisymax = max(geckoitems)
-        geckodata = {'items': geckoitems,
+        geckodata = {'item': geckoitems,
                      'settings': {
-                         'axisx': [axisxmin,axisxmax],
-                         'axisy': [axisymin,axisymax],
+                         'axisx': [axisxmin, axisxmax],
+                         'axisy': [0, axisymax],
                      },
                      }
         return json.dumps(geckodata)
